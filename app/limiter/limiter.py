@@ -1,13 +1,12 @@
 import redis
 import time
 
-ONE_MINUTE = 60
-
 class RateLimiter:
 
-    def __init__(self, id, max_reqs):
-        self.id = id
+    def __init__(self, key, max_reqs, time_limit):
+        self.key = key
         self.max_reqs = max_reqs
+        self.time_limit = time_limit 
         self.cache = redis.Redis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True)
 
     def __call__(self, f):
@@ -24,15 +23,17 @@ class RateLimiter:
         Returns true if user is blocked and false if user is not blocked
         """
         pipeline = self.cache.pipeline()
-        pipeline.set(self.id, 0, ex=ONE_MINUTE, nx=True)
-        pipeline.incr(self.id)
-        results = pipeline.execute()
+        pipeline.set(self.key, 0, ex=self.time_limit, nx=True)
+        pipeline.incr(self.key)
+        count = pipeline.execute()[1]
 
-        count = results[1]
         if count > self.max_reqs:
             return True
 
         return False
+
+    def get_blocked_time(self):
+        return self.cache.ttl(self.key)
         
         
             

@@ -1,5 +1,7 @@
 from flask import Flask
-from limiter.limiter import RateLimiter
+import os
+print (os.getcwd())
+from ..limiter.limiter import RateLimiter
 import time
 app = Flask(__name__)
 
@@ -13,7 +15,7 @@ def hello_world():
 def test():
     limiter = RateLimiter('mitch', 3)
     if limiter.is_blocked():
-        return "You are blocked", 429
+        return f"You are blocked, please wait {limiter.get_blocked_time()} seconds", 429
     return "not blocked", 200
 
 
