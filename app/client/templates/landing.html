@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Rate Limiter Client</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+    <body>
+        {% if max_requests %}
+            <h1>Blocked</h1>
+            <p>You have reached the maximum of {{ max_requests }} requests within {{ time_limit }} seconds, please wait {{ blocked_time }} seconds</p>
+        {% else %}
+            <h1>Welcome!</h1>
+            <p>To test the Rate Limiter, load the page 3 times within 20 seconds.</p>
+            <p>Then load one more time and you will be blocked by the Api Rate Limiter</p>
+        {% endif %}
+    </body>
+</html>
