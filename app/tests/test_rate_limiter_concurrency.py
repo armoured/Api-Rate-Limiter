@@ -21,7 +21,7 @@ def send_fast_requests(limiter):
 
 class TestRateLimiterConcurrent:
 
-    @pytest.mark.skip(reason="toggled off")
+    # @pytest.mark.skip(reason="toggled off")
     def test_fast_concurrent(self, limiter):
         """
         Test concurrency with two threads. Send 4 requests in total. 
