@@ -15,7 +15,7 @@ class TestRateLimiterSequential:
         rate_limiter = limiter(ip_v6, 3, 60)
         reqs = 0
         for i in range(0, 250000):
-            if rate_limiter.get_blocked_time() < 0:
+            if rate_limiter.get_blocked_time() <= 0:
                 reqs = 0
         
             if reqs < 3:
