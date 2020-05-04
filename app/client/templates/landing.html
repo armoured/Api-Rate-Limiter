@@ -12,6 +12,8 @@
             <p>You have reached the maximum of {{ max_requests }} requests within {{ time_limit }} seconds, please wait {{ blocked_time }} seconds</p>
         {% else %}
             <h1>Welcome!</h1>
+            <p>To test the Rate Limiter, load the page 3 times within 20 seconds.</p>
+            <p>Then load one more time and you will be blocked by the Api Rate Limiter</p>
         {% endif %}
     </body>
 </html>
