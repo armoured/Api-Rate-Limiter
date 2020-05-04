@@ -33,7 +33,7 @@ class RateLimiter:
         return False
 
     def get_blocked_time(self):
-        return self.cache.ttl(self.key)
+        return max(self.cache.ttl(self.key), 0)
         
         
             
