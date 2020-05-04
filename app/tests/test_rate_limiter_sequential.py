@@ -6,7 +6,7 @@ ip_v6 = '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
 
 class TestRateLimiterSequential:
 
-    @pytest.mark.skip(reason="toggled off")
+    # @pytest.mark.skip(reason="toggled off")
     def test_fast_stress(self, limiter):
         """
         Send 250000 requests sequentially.
@@ -15,8 +15,9 @@ class TestRateLimiterSequential:
         rate_limiter = limiter(ip_v6, 3, 60)
         reqs = 0
         for i in range(0, 250000):
-            if rate_limiter.get_blocked_time() < 0:
+            if rate_limiter.get_blocked_time() == 0:
                 reqs = 0
+                time.sleep(1) # make sure the key expires
         
             if reqs < 3:
                 assert(rate_limiter.is_blocked() == False)
@@ -24,7 +25,7 @@ class TestRateLimiterSequential:
                 assert(rate_limiter.is_blocked() == True)
             reqs += 1
 
-    @pytest.mark.skip(reason="toggled off")
+    # @pytest.mark.skip(reason="toggled off")
     def test_edge(self, limiter):
         """
         Send three fast requests which get accepted, then wait 4 seconds
@@ -44,7 +45,7 @@ class TestRateLimiterSequential:
         assert(rate_limiter.is_blocked() == False)
         assert(rate_limiter.is_blocked() == True)
 
-    @pytest.mark.skip(reason="toggled off")
+    # @pytest.mark.skip(reason="toggled off")
     def test_blocked_time(self, limiter):
         """
         Send three fast requests and check blocked time is 3 seconds
@@ -69,7 +70,7 @@ class TestRateLimiterSequential:
         assert(rate_limiter.is_blocked() == False)
         assert(rate_limiter.get_blocked_time() == 3)
 
-    @pytest.mark.skip(reason="toggled off")
+    # @pytest.mark.skip(reason="toggled off")
     def test_one_request_per_second(self, limiter):
         """
         Send one request per second with a maximum of 1 requests every 1 second.
