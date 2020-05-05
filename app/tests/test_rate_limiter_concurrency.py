@@ -6,6 +6,10 @@ ip_v6 = '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
 blocked = []
 
 def send_fast_requests(limiter):
+    """
+    Helper function that is used to test concurrency of two spawned threads
+    calling the api rate limiter. 
+    """
     global blocked
     rate_limiter = limiter(ip_v6, 3, 60)
     # first request for both processes should be accepted
