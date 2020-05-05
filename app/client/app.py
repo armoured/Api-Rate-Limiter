@@ -9,6 +9,9 @@ TIME_LIMIT=20
 
 @app.route('/')
 def test():
+    """
+    Used to test the api rate limiter library on a flask route.
+    """
     limiter = RateLimiter(key=sample_ip_v6, max_reqs=MAX_REQUESTS, time_limit=TIME_LIMIT)
     if limiter.is_blocked():
         return render_template('landing.html', 
