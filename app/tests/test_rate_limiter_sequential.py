@@ -107,6 +107,38 @@ class TestRateLimiterSequential:
         time.sleep(1)
         assert(rate_limiter.is_blocked() == False)
 
+    #@pytest.mark.skip(reason="toggled off")
+    def test_double_requests_end_start(self, limiter):
+        """
+        With a fixed window algorithm, it is possible to send 2n requests
+        within a certain time period. For example, set max requests to 2 for
+        a fixed time period of 1 second. after 0.5 seconds send two fast requests. 
+        Then after 1 second send another two fast requests before 1.5 seconds. 
+        We should have sent 4 requests in a rolling window of 1 second (1.5-0.5 seconds)
+        thus breaking the rule of a maximum of 2 requests in 1 second.
+
+        This is a known limitation of the fixed window algorithm. 
+        """
+        # my implementation requires us to have 1 call initially
+        # to start the timer, so we must make the make max requests 3 instead of 2
+        # to account for this starting request.
+        rate_limiter = limiter(ip_v6, 3, 1)
+        assert(rate_limiter.is_blocked() == False)
+
+        time.sleep(0.5) # 0.5 seconds now
+        assert(rate_limiter.is_blocked() == False)
+        assert(rate_limiter.is_blocked() == False)
+        time.sleep(0.6) # 1.1 seconds now
+        # requests are unblocked now as it has been more than 1 second since the
+        # first request.
+        assert(rate_limiter.is_blocked() == False)
+        assert(rate_limiter.is_blocked() == False)
+
+        # we've sent 4 requests in (1.1 - 0.5) = 0.6 seconds
+        # which is currently greater than the maximum number of 3 requests.
+
+
+
 
 
 
