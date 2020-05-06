@@ -1,5 +1,7 @@
 # Fixed Window Api Rate Limiter for Python3
 
+Hi, I created this Api Rate Limiter in Python3 using a Fixed Window Algorithm to improve my knowledge of distributed systems and put theory into practice. In the future I will modify this implementation to use a Sliding Window Algorithm to gain experience with extending exisitng software.
+
 ## Setup
 
 The following setup instructions are for Mac (Linux will be similar.)
@@ -77,4 +79,27 @@ Then run \
 
 ## System Design
 
+This Api Rate Limiter has been implemented with a Fixed Window Algorithm. This allowed the implementation to be extremely simple. 
+
+With a fixed window algorithm a requestor can send a certain amount of requests within a time period before they become rate limited.
+
+A Redis cache is used to store the number of requests a user has sent during a fixed time period. Redis was chosen as it is a highly efficient key-value store ideal for this situation. 
+It also provides atomicity in a distributed environment.
+
+The Redis cache is hosted on a separate server. Using a cache on it's own server allows the rate limiter to be used across a cluster of servers, which means if a requestor sends more than the maximum number of requests on one server, they will be rate limited on all servers.
+
+
 ## Limitations and Enhancements
+
+### Fixed Window Algorithm limitations
+
+Fixed window algorithms are not entirely correct. For example, consider a maximum number of requests of 2 for a given fixed time window of 1 second. A requestor can send 2 requests just after 0.5 seconds, wait until 1 second has passed so they become unblocked and send another 2 requests before 1.5 seconds have passed. They have essentially sent 4 requests with a rolling time window of 1 second (1.5 seconds - 0.5 seconds) which is greater than the maximum of 2 requests per 1 second. 
+
+This algorithm can generalise to worst case 2n requests being sent in a rolling time window the same amount of seconds as the fixed time window.
+
+Redis limitations
+ - spof
+ - atomicity introduces more latency due to locking the cache when accessed.
+
+Key choices IPV6 vs User Id/Token
+
