@@ -38,7 +38,7 @@ Send requests to the server by reloading the page. After your 3rd reload within 
 
 ## Module Usage
 
-The RateLimiter class has three callable functions that will allow you to rate limit your api's.
+The `RateLimiter` class has three callable functions that will allow you to rate limit your api's.
 
 The constructor takes three arguments
 
